@@ -54,3 +54,6 @@ miller_rabin p = test_mr p l
             | 1 `elem` l && (last $ takeWhile (/= 1) l) /= (p - 1) = False
             | otherwise = False
 
+
+miller_rabin_test :: (Integral a, Random a) => a -> Int -> Bool
+miller_rabin_test p n = and $ replicate n (miller_rabin p)
