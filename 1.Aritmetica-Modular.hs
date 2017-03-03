@@ -60,8 +60,11 @@ miller_rabin p = test_mr p l
             | otherwise                                            = False -- No es primo
 
 miller_rabin_test :: (Integral a, Random a) => a -> Int -> Bool
-miller_rabin_test p n = and $ replicate n (miller_rabin p)
+-- Realiza un and con las n salidas del test de Miller-Rabin
+miller_rabin_test p n = and $ replicate n (miller_rabin p) 
 
+-- Función para devolver el índice como un entero
+-- en vez de un Maybe Int con elemIndex
 indexOf :: (Integral a) => a -> [a] -> a
 indexOf y xs = index y xs 0
     
@@ -72,12 +75,15 @@ index y (x:xs) n
             | otherwise = n
 
 baby_pass_giant_pass :: (Integral a, Random a) => a -> a -> a -> [a]
-baby_pass_giant_pass _ 1 _ = [0]
+baby_pass_giant_pass _ 1 _ = [0] -- Si b == 1, devolvemos un 0
 baby_pass_giant_pass a b p 
+    -- Si es primo, devolvemos los ks que cumplen a^k = b en Z_p
     | (miller_rabin_test p 5) == True = ks
     | otherwise                       = []
     where
-        s = ceiling $ sqrt ( fromIntegral (p-1))
-        big_pass = map (\x -> big_pow a (x * s) p) [1..s]
-        low_pass = map (\x -> (b * a^x) `mod` p ) [0..s - 1]
+        s = ceiling $ sqrt ( fromIntegral (p-1)) 
+        big_pass = map (\x -> big_pow a (x * s) p) [1..s] -- Calculamos el paso gigante => L
+        low_pass = map (\x -> (b * a^x) `mod` p ) [0..s - 1] -- Calculamos el paso pequeño => l
+        -- Realizamos la intersección de L y l y calculamos para la lista resultante
+        -- para cada k en ks => k = cs - r
         ks = map (\x -> ((indexOf x big_pass) + 1) * s - (indexOf x low_pass)) (intersect big_pass low_pass)
