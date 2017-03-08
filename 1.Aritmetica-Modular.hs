@@ -44,7 +44,7 @@ miller_rabin p = test_mr p l
     where
         s_u = bifactor (p - 1)  -- Descomponemos p - 1 = 2^s * u --> [s, u]
         a = unsafePerformIO $ randomRIO (2, p - 2) -- obtenemos una semilla aleatoria para el test
-        l = map (\x -> big_pow a ((2^x)*s_u !! 1) p) [0..s_u !! 0] -- y construimos la lista
+        l = map (\x -> big_pow a (2^x * s_u !! 1) p) [0..s_u !! 0] -- y construimos la lista
 
         test_mr :: (Integral a) => a -> [a] -> Bool
         test_mr p l
@@ -58,6 +58,7 @@ miller_rabin p = test_mr p l
             | 1 `elem` l && (last $ takeWhile (/= 1) l) /= (p - 1) = False -- No es primo
             -- En otro caso
             | otherwise                                            = False -- No es primo
+            
 
 miller_rabin_test :: (Integral a, Random a) => a -> Int -> Bool
 -- Realiza un and con las n salidas del test de Miller-Rabin
@@ -78,12 +79,19 @@ baby_pass_giant_pass :: (Integral a, Random a) => a -> a -> a -> [a]
 baby_pass_giant_pass _ 1 _ = [0] -- Si b == 1, devolvemos un 0
 baby_pass_giant_pass a b p 
     -- Si es primo, devolvemos los ks que cumplen a^k = b en Z_p
-    | (miller_rabin_test p 5) == True = ks
-    | otherwise                       = []
+    | (miller_rabin_test p 5) = ks
+    | otherwise               = []
     where
-        s = ceiling $ sqrt ( fromIntegral (p-1)) 
-        big_pass = map (\x -> big_pow a (x * s) p) [1..s] -- Calculamos el paso gigante => L
-        low_pass = map (\x -> (b * a^x) `mod` p ) [0..s - 1] -- Calculamos el paso pequeño => l
-        -- Realizamos la intersección de L y l y calculamos para la lista resultante
+        s = ceiling $ sqrt $ fromIntegral (p-1)
+        -- Calculamos el paso gigante => L
+        big_pass = map (\x -> big_pow a (x * s) p) [1..s] 
+        -- Calculamos el paso pequeño => l
+        low_pass = map (\x -> (b * a^x) `mod` p ) [0..s - 1] 
+        -- Realizamos la intersección de L y l y 
+        -- calculamos para la lista resultante
         -- para cada k en ks => k = cs - r
-        ks = map (\x -> ((indexOf x big_pass) + 1) * s - (indexOf x low_pass)) (intersect big_pass low_pass)
+        ks = map (\x -> ((indexOf x big_pass) + 1) * s - 
+            (indexOf x low_pass)) (intersect big_pass low_pass)
+
+
+--- Congruencias => tema 2 números reales de los apuntes de J. Miranda
