@@ -109,3 +109,28 @@ jacobi a p
                 | a == -1     = (-1)^((p - 1) `div` 2)
                 | a `mod` 2 /= 0 && p `mod` 2 /= 0 = jacobi p a
                 | otherwise                        = jacobi a p
+
+
+{-sqrt_mod :: (Integral a) => a -> a -> a
+sqrt_mod a p
+    | jacobi a p /= 1 = error "No existen raíces para a mod p" 
+    | u == 1          = big_pow a ((p + 1) `div` 4) p
+    | otherwise       = search_residual a u s n p
+        where 
+            u_s = bifactor (p - 1)
+            u = head u_s
+            s = last u_s
+            n = 1 + last $ takeWhile (jacobi u p) [2..p-1]
+
+search_residual :: (Integral a) => a -> a -> a -> a -> a -> a
+search_residual a u s n p = res r b j inv_a u 
+    where
+        r     = big_pow a ((s + 1) `div` 2) p
+        b     = big_pow n s p
+        j     = 0
+        inv_a = inverse a p
+        res :: (Integral a) => a -> a -> a -> a -> a -> a
+        res r b j inv_a u 
+            | j > (u - 2) = r
+            | (big_pow (inv_a * r^2) (2^(u - 2 -j)) p) == (p - 1) = res ((r * b) `mod` p) (b^2) (j+1) inv_a u 
+            | otherwise = res r (b^2) (j+1) inv_a u -}
