@@ -111,7 +111,13 @@ jacobi a p
                 | otherwise                        = jacobi a p
 
 
-{-sqrt_mod :: (Integral a) => a -> a -> a
+sqrts_mod :: (Integral b) => b -> b -> [b]
+sqrts_mod a p = sort [sqr, p - sqr]
+    where
+        sqr = sqrt_mod a p
+
+
+sqrt_mod :: (Integral b) => b -> b -> b
 sqrt_mod a p
     | jacobi a p /= 1 = error "No existen raíces para a mod p" 
     | u == 1          = big_pow a ((p + 1) `div` 4) p
@@ -120,17 +126,18 @@ sqrt_mod a p
             u_s = bifactor (p - 1)
             u = head u_s
             s = last u_s
-            n = 1 + last $ takeWhile (jacobi u p) [2..p-1]
+            n =  1 + (last $ takeWhile  (\x -> (jacobi x p) == 1) [2..p - 1])
 
-search_residual :: (Integral a) => a -> a -> a -> a -> a -> a
-search_residual a u s n p = res r b j inv_a u 
+search_residual :: (Integral b) => b -> b -> b -> b -> b -> b
+search_residual a u s n p = res r b j inv_a u p
     where
         r     = big_pow a ((s + 1) `div` 2) p
         b     = big_pow n s p
         j     = 0
         inv_a = inverse a p
-        res :: (Integral a) => a -> a -> a -> a -> a -> a
-        res r b j inv_a u 
+        res :: (Integral b) => b -> b -> b -> b -> b -> b -> b
+        res r b j inv_a u p 
             | j > (u - 2) = r
-            | (big_pow (inv_a * r^2) (2^(u - 2 -j)) p) == (p - 1) = res ((r * b) `mod` p) (b^2) (j+1) inv_a u 
-            | otherwise = res r (b^2) (j+1) inv_a u -}
+            | (big_pow (inv_a * r^2) (2^(u - 2 -j)) p) == (p - 1) = res ((r * b) `mod` p) (b^2) (j+1) inv_a u p
+            | otherwise = res r (b^2) (j+1) inv_a u p
+            
