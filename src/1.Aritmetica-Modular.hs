@@ -141,3 +141,24 @@ search_residual a u s n p = res r b j inv_a u p
             | (big_pow (inv_a * r^2) (2^(u - 2 -j)) p) == (p - 1) = res ((r * b) `mod` p) (b^2) (j+1) inv_a u p
             | otherwise = res r (b^2) (j+1) inv_a u p
             
+
+norm :: (Integral a) => (a, a, a) -> (a, a, a)
+norm (x, y, m)
+    | y `mod` d /= 0 = error "Error: congruencia sin solución"
+    | otherwise      = (1, e, f)
+    where
+        euc = ext_euclides x m
+        d = head euc
+        s = euc !! 1
+        h = y `div` d
+        f = m `div` d
+        e = (h * s) `mod` f
+        
+chinese_remainder :: (Integral a) => (a, a, a) -> (a, a, a) -> a -> a
+chinese_remainder (x, a, p) (x', b, q) n = sol
+    where
+        (x1, a', p') = norm (x, a, p)
+        (x2, b', q') = norm (x', b, q)
+        inv_p = inverse p q
+        aux = (b' - a') * inv_p
+        sol = (a' + p * aux) `mod` n
