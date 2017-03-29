@@ -162,3 +162,15 @@ chinese_remainder (x, a, p) (x', b, q) n = sol
         inv_p = inverse p q
         aux = (b' - a') * inv_p
         sol = (a' + p * aux) `mod` n
+
+sqrts_mod_n :: (Integral b) => b -> b -> b -> [b]
+sqrts_mod_n a p q = roots
+    where
+        sqrts_p = sqrts_mod a p
+        sqrts_q = sqrts_mod a q
+        n       = p * q
+        root1   = chinese_remainder (1, (head sqrts_p), p) (1, (head sqrts_q), q) n
+        root2   = chinese_remainder (1, (last sqrts_p), p) (1, (head sqrts_q), q) n
+        root1'  = n - root1
+        root2'  = n - root2
+        roots   = sort [root1, root1', root2, root2']
