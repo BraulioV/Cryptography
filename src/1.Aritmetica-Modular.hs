@@ -174,3 +174,27 @@ sqrts_mod_n a p q = roots
         root1'  = n - root1
         root2'  = n - root2
         roots   = sort [root1, root1', root2, root2']
+
+
+fermat :: Integral a => a -> [a]
+fermat n = fermat' x n
+    where
+        --                       _         _
+        -- valor inicial de x = |  sqrt(n)  |
+        x       = ceiling $ sqrt (fromIntegral n)
+
+
+fermat' :: Integral a => a -> a -> [a]
+fermat' x n
+    -- Si no encontramos solución, devolvemos la lista vacía
+    | x >= n    = []
+    -- SI la raíz es entera, devolvemos la factorización
+    | cond      = [x - high_sqrt, x + high_sqrt]
+    -- En caso contrario, seguimos buscando
+    | otherwise = fermat' x' n 
+        where
+            sqrt_val  = sqrt (fromIntegral (x^2 - n))
+            low_sqrt  = floor $ sqrt_val
+            high_sqrt = ceiling $ sqrt_val
+            cond      = high_sqrt == low_sqrt
+            x'        = x + 1
