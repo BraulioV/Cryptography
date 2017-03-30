@@ -198,3 +198,22 @@ fermat' x n
             high_sqrt = ceiling $ sqrt_val
             cond      = high_sqrt == low_sqrt
             x'        = x + 1
+
+pollard :: Integral a => a -> a -> a -> a -> (a -> a) -> a
+pollard n x y d f
+    | d == 1    = pollard n x' y' d' f
+    | d == n    = error "Error: no se encuentra descomposición para n"
+    | otherwise = d
+    where
+        x' = f x
+        y' = f (f y)
+        d' = head $ ext_euclides (abs (x' - y')) n
+
+rho_pollard :: Integral a => a -> a -> [a]
+rho_pollard n c 
+    | c == 0 || c == -2 = error "Error: c tiene que ser distinto de 0 y -2"
+    | otherwise         = [factor, n `div` factor]
+    where
+        f = \x -> (x^2 + c) `mod` n
+        --       pollard n x y d f
+        factor = pollard n 2 2 1 f
