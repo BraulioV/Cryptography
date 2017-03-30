@@ -80,6 +80,14 @@ def miller_rabin_test(num, n = 10):
     return reduce(lambda x, y: x and y, [miller_rabin(num) for i in range(n)])
 
 
+def isqrt(n):
+    x = n
+    y = (x + 1) // 2
+    while y < x:
+        x = y
+        y = (x + n // x) // 2
+    return x
+
 def baby_pass_giant_pass(a, b, p):
     # Si p es primo
     if miller_rabin_test(p):
@@ -89,7 +97,7 @@ def baby_pass_giant_pass(a, b, p):
         
         else:
             # Si k existe -> k = cs -r; 0 <= r < s; 1 <= c <= s
-            s = ceil(sqrt(p - 1))
+            s = isqrt(p - 1)
             # giant pass
             L = [pow(a, i*s, p) for i in range(1, s + 1)]
             # baby pass
@@ -222,22 +230,19 @@ def Fermat(n):
     #                       _       _
     # valor inicial de x = | sqrt(m) |
     #
-    x = ceil(sqrt(n))
-    val = x**2 - n
+    x = isqrt(n) + 1
     # mientras que val no sea un cuadrado perfecto
     while x < n:
-        x+=1
-        sqrt_val = sqrt(x**2 - n)
-        if sqrt_val.is_integer():
+        val = x**2 - n
+        sqrt_val = isqrt(val)
+        if val == sqrt_val**2:
             sqrt_val = int(sqrt_val)
             break
+        x+=1
     else:
         # Si no lo encuentra, devuelve una lista vacía
         return []
     return [x - sqrt_val, x + sqrt_val]
-
-#print(Fermat(6352351))
-#print(Fermat(5959))
 
 
 def Pollard(n, c, f):
@@ -259,6 +264,3 @@ def ρ_Pollard(n, c = 1):
     f = lambda x: (x**2 + c) % n
     factor = Pollard(n, c, f)
     return [factor, n // factor]
-
-    
-#ρ_Pollard(6352351)
