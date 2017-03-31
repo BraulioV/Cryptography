@@ -38,8 +38,6 @@ def big_pow(a, b, n):
     return p % n
 
 
-big_pow(156187561565735418, 43498489489156978415674, 23)
-
 def bifactor(num):
     a0, s = num, 0
     while a0 > 0 and a0 % 2 == 0:
@@ -99,7 +97,7 @@ def baby_pass_giant_pass(a, b, p):
             # Si k existe -> k = cs -r; 0 <= r < s; 1 <= c <= s
             s = isqrt(p - 1)
             # giant pass
-            L = [pow(a, i*s, p) for i in range(1, s + 1)]
+            L = [big_pow(a, i*s, p) for i in range(1, s + 1)]
             # baby pass
             l = [(b * a**i) % p for i in range(s)]
             # calculamos la intersección entre L y l
