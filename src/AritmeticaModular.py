@@ -94,9 +94,9 @@ def baby_pass_giant_pass(a, b, p):
             return 0 # k = 0
         
         else:
-            ks = []
             # Si k existe -> k = cs -r; 0 <= r < s; 1 <= c <= s
-            s = isqrt(p - 1)
+            # s = isqrt(p - 1)
+            s = isqrt(p)+1
             # giant pass
             L = [big_pow(a, i*s, p) for i in range(1, s + 1)]
             # baby pass
@@ -105,7 +105,10 @@ def baby_pass_giant_pass(a, b, p):
                 li = (b * big_pow(a, i, p)) % p
                 # check if li is on L
                 if li in L:
-                    ks.append((L.index(li) + 1) * s - i)
+                    return (L.index(li) + 1) * s - i
+            else:
+                print("No existe logaritmo para este número")
+                return None
             # l = [(b * big_pow(a, i, p))%p for i in range(s)]
             # # calculamos la intersección entre L y l
             # ks = list(filter(lambda x: x in L, l))
@@ -113,7 +116,6 @@ def baby_pass_giant_pass(a, b, p):
             # # no sea primitivo, habrá varios k
             # for k in ks:
             #     yield (L.index(k) + 1) * s - l.index(k)
-            return ks
     
     else:
         print("p =", p, "no es primo.")
