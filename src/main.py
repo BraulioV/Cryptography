@@ -23,20 +23,20 @@ if __name__ == "__main__":
     elif argv[1] == "BPGP":
         print("Ejecución del Baby Pass - Giant Pass")
         for i in range(3):
-            results[i,:] = [cases[i], timeit('AritmeticaModular.baby_pass_giant_pass(123456, 1749924,' +
+            results.loc[i] = [cases[i], timeit('AritmeticaModular.baby_pass_giant_pass(123456, 1749924,' +
              cases[i] +')', setup="import AritmeticaModular", number=N_TEST)]
     
     elif argv[1] == "Jacobi":
         print("Ejecución del símbolo de Jacobi")
         for i in range(len(cases)):
-            results[i,:] = [cases[i], timeit('AritmeticaModular.Jacobi(1749924, '
+            results.loc[i] = [cases[i], timeit('AritmeticaModular.Jacobi(1749924, '
                 + cases[i] + ')', setup="import AritmeticaModular", number=N_TEST)]
     
     elif argv[1] == "SQRT":
         print("Ejecución de las raíces modulares")
 
         for i in range(len(cases)):
-            results[i,:] = [cases[i], timeit('AritmeticaModular.Jacobi(123456, ' + cases[i] + ', '
+            results.loc[i] = [cases[i], timeit('AritmeticaModular.Jacobi(123456, ' + cases[i] + ', '
                 + cases[-(i+1)] + ')', setup="import AritmeticaModular",
                 number=N_TEST)]
     
