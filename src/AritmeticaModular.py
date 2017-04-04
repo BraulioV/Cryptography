@@ -166,7 +166,7 @@ def sqrt_mod(a, p):
             if Jacobi(n, p) == -1:
                 break
         else:
-            print("Error: no tiene inverso")
+            raise ValueError("Error: no tiene inverso")
             return None
         
         # Descomponemos p - 1 en 2^su
@@ -187,7 +187,7 @@ def sqrt_mod(a, p):
             
             return r
     else:
-        print("No tiene raíz cuadrada módulo", p)
+        raise ValueError("No tiene raíz cuadrada módulo", p)
         return None
 
 # Devuelve las 2 raíces del número a en Z_p
