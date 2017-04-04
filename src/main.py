@@ -2,6 +2,9 @@ import pandas as pd
 from timeit import timeit
 from sys import argv
 from AritmeticaModular import *
+
+from ggplot import *
+
 N_TEST = 1000
 
 if __name__ == "__main__":
@@ -11,12 +14,13 @@ if __name__ == "__main__":
     cases = ['46381', '768479', '9476407', '36780481', '562390847', '1894083629', '65398261921',
              '364879542899', '8590365927553', '28564333765949', '12345678910111', ]
 
-    results = pd.DataFrame(columns = {'Case', 'Time'})
-    
+    # results = pd.DataFrame(columns = {'Case', 'Time'}, dtype=(int, float))
+    results = pd.DataFrame(columns={'Case', 'Time'})
     if argv[1] == "MR":
         print("Ejecución del Test de Miller Rabin")
     
         for i in range(len(cases)):
+
             results.loc[i] = [cases[i], timeit('AritmeticaModular.miller_rabin_test('+ cases[i] + ')',
                 setup="import AritmeticaModular", number=N_TEST)/N_TEST]
     
@@ -46,5 +50,6 @@ if __name__ == "__main__":
             \tBPGP: Baby-Pass-Giant-Pass Benchmark\n\
             \tJacobi: Jacobi's Symbol Benchmark\n\
             \tSQRT: Modular Square Roots Benchmark")
-
     print(results)
+
+    print(ggplot(aes(x='Case', y='Time'), results) + geom_bar() + theme(axis_text_x = element_text(angle = 310)))
