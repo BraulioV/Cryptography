@@ -86,7 +86,7 @@ def isqrt(n):
         y = (x + n // x) // 2
     return x
 
-def baby_pass_giant_pass(a, b, p):
+def baby_step_giant_step(a, b, p):
     # Si p es primo
     if miller_rabin_test(p):
         # Buscamos k tal que a^k = b, con a,b in Z_p
@@ -98,14 +98,19 @@ def baby_pass_giant_pass(a, b, p):
             # s = isqrt(p - 1)
             s = isqrt(p)+1
             # giant pass
-            L = [big_pow(a, i*s, p) for i in range(1, s + 1)]
+            L = {}
+            L_aux = []
+            for i in range(1, s + 1):
+                Li = big_pow(a, i*s, p)
+                L[Li] = Li
+                L_aux.append(Li)
             # baby pass
             for i in range(s):
                 # baby step
                 li = (b * big_pow(a, i, p)) % p
                 # check if li is on L
-                if li in L:
-                    return (L.index(li) + 1) * s - i
+                if L.get(li):
+                    return (L_aux.index(li) + 1) * s - i
             else:
                 print("No existe logaritmo para este número")
                 return None

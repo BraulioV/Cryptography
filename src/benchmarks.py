@@ -8,7 +8,7 @@ N_TEST = 1000
 
 cases = [46381, 768479, 9476407, 36780481, 562390847, 1894083629, 65398261921,
          364879542899, 8590365927553, 28564333765949, 12345678910111]
-
+explist = [1749924,1749924,1749925,1749925]
 
 def create_empty_df():
     return pd.DataFrame(columns={'Case', 'Time'}, dtype=(int, float))
@@ -33,10 +33,11 @@ def BPGP_Benchmark():
     print("Ejecución del Baby Pass - Giant Pass")
 
     results = create_empty_df()
-
-    for i in range(3):
-        results.loc[i] = [cases[i], timeit('AritmeticaModular.baby_pass_giant_pass(123456, 1749924,' +
-                                           str(cases[i]) + ')', setup="import AritmeticaModular", number=N_TEST)]
+    for i in range(len(explist)):
+        print(i)
+        results.loc[i] = [cases[i], timeit('AritmeticaModular.baby_step_giant_step(123456,' + 
+                                            str(explist[i] % cases[i]) + ',' + str(cases[i]) + 
+                                            ')', setup="import AritmeticaModular", number=N_TEST)]
 
     return results
 
