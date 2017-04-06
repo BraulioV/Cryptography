@@ -96,36 +96,25 @@ def baby_step_giant_step(a, b, p):
         else:
             # Si k existe -> k = cs -r; 0 <= r < s; 1 <= c <= s
             # s = isqrt(p - 1)
-            s = isqrt(p)+1
+            s = isqrt(p)
             # giant pass
             L = {}
-            L_aux = []
             for i in range(1, s + 1):
                 Li = big_pow(a, i*s, p)
-                L[Li] = Li
-                L_aux.append(Li)
+                L[Li] = i
             # baby pass
             for i in range(s):
                 # baby step
                 li = (b * big_pow(a, i, p)) % p
                 # check if li is on L
-                if L.get(li):
-                    return (L_aux.index(li) + 1) * s - i
+                Li = L.get(li)
+                if Li:
+                    return (Li) * s - i
             else:
-                print("No existe logaritmo para este número")
-                return None
-            # l = [(b * big_pow(a, i, p))%p for i in range(s)]
-            # # calculamos la intersección entre L y l
-            # ks = list(filter(lambda x: x in L, l))
-            # # calculamos los k, que en caso de que p
-            # # no sea primitivo, habrá varios k
-            # for k in ks:
-            #     yield (L.index(k) + 1) * s - l.index(k)
+                raise ValueError("No existe logaritmo para este número")
     
     else:
-        print("p =", p, "no es primo.")
-    
-    return None
+        raise AttributeError("p =", p, "no es primo.")
 
 
 def Jacobi(a, p):
@@ -143,7 +132,10 @@ def Jacobi(a, p):
         u, s = bifactor(a0)  # 2: (ab / p) = (a / p)*(b / p)
 
         if u > 0:  # 3: (2 / p)  = (-1)**((p^2 - 1)/8)
-            symbol = ((-1) ** ((p ** 2 - 1) // 8))**u
+            symbol = ((-1) ** ((p ** 2 - 1) // 8))
+            if u % 2 == 0:
+                symbol*=symbol
+
 
         # se puede descomponer n en a * b
         # y son distintos de 1 y -1
@@ -159,7 +151,6 @@ def Jacobi(a, p):
         
     else:
         raise AttributeError('p tiene que ser impar')
-        return None
 
 
 def sqrt_mod(a, p):

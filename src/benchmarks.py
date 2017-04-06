@@ -2,7 +2,7 @@ import pandas as pd
 from timeit import timeit
 from sys import argv
 from AritmeticaModular import *
-from ggplot import *
+
 
 N_TEST = 1000
 
@@ -22,20 +22,20 @@ def MR_Benchamrk():
 
     for i in range(len(cases)):
 
-        results.loc[i] = [cases[i], timeit('AritmeticaModular.miller_rabin_test(' + str(cases[i]) + ')',
+        results.loc[i] = [str(cases[i]), timeit('AritmeticaModular.miller_rabin_test(' + str(cases[i]) + ')',
                                            setup="import AritmeticaModular", number=N_TEST) / N_TEST]
 
     return results
 
 
-def BPGP_Benchmark():
+def BSGS_Benchmark():
 
     print("Ejecución del Baby Pass - Giant Pass")
 
     results = create_empty_df()
-    for i in range(len(explist)):
-        print(i)
-        results.loc[i] = [cases[i], timeit('AritmeticaModular.baby_step_giant_step(123456,' + 
+    # for i in range(len(explist)):
+    for i in range(3):
+        results.loc[i] = [str(cases[i]), timeit('AritmeticaModular.baby_step_giant_step(123456,' + 
                                             str(explist[i] % cases[i]) + ',' + str(cases[i]) + 
                                             ')', setup="import AritmeticaModular", number=N_TEST)]
 
@@ -49,8 +49,10 @@ def Jacobi_Benchmark():
     results = create_empty_df()
 
     for i in range(len(cases)):
-        results.loc[i] = [cases[i], timeit('AritmeticaModular.Jacobi(1749924, '
+        results.loc[i] = [str(cases[i]), timeit('AritmeticaModular.Jacobi(1749924, '
                                            + str(cases[i]) + ')', setup="import AritmeticaModular", number=N_TEST)]
+
+    print(results)
 
     return results
 
@@ -62,8 +64,7 @@ def ModSqrt_Benchmark():
     results = create_empty_df()
 
     for i in range(len(cases)):
-        print("caso =",i)
-        results.loc[i] = [cases[i], timeit('AritmeticaModular.sqrts_mod_n(123456, '
+        results.loc[i] = [str(cases[i]), timeit('AritmeticaModular.sqrts_mod_n(123456, '
                                            + str(cases[i]) + ', ' +
                                            str(cases[-(i + 1)]) + ')',
                                            setup="import AritmeticaModular", number=N_TEST)]
@@ -78,7 +79,7 @@ def Fermat_Benchmark():
 
     for i in range(len(cases)):
         print("caso =",i)
-        results.loc[i] = [cases[i], timeit('AritmeticaModular.Fermat('+ str(3*cases[i] + 1) + ')',
+        results.loc[i] = [str(cases[i]), timeit('AritmeticaModular.Fermat('+ str(3*cases[i] + 1) + ')',
                                            setup="import AritmeticaModular", number=N_TEST)]
 
     return results
@@ -91,7 +92,7 @@ def Pollard_Benchmark():
 
     for i in range(len(cases)):
         print("caso =",i)
-        results.loc[i] = [cases[i], timeit('AritmeticaModular.ρ_Pollard('+ str(3*cases[i] + 1) + ')',
+        results.loc[i] = [str(cases[i]), timeit('AritmeticaModular.ρ_Pollard('+ str(3*cases[i] + 1) + ')',
                                            setup="import AritmeticaModular", number=N_TEST)]
 
     return results
@@ -106,8 +107,8 @@ if __name__ == "__main__":
     if argv[1] == "MR":
         df = MR_Benchamrk()   
 
-    elif argv[1] == "BPGP":
-        df = BPGP_Benchmark()
+    elif argv[1] == "BSGS":
+        df = BSGS_Benchmark()
 
     elif argv[1] == "Jacobi":
         df = Jacobi_Benchmark()
@@ -131,7 +132,7 @@ if __name__ == "__main__":
     else:
         raise AttributeError("\nNot a suitable option. Please, choose one of:\n\
             \tMR: Miller-Rabin Benchmark \n\
-            \tBPGP: Baby-Pass-Giant-Pass Benchmark\n\
+            \tBSGS: Baby-Pass-Giant-Pass Benchmark\n\
             \tJacobi: Jacobi's Symbol Benchmark\n\
             \tSQRT: Modular Square Roots Benchmark")
 
