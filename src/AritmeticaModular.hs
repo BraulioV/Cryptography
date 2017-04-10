@@ -68,17 +68,27 @@ module AritmeticaModular (ext_euclides, inverse, big_pow, miller_rabin_test,
     -- Realiza un and con las n salidas del test de Miller-Rabin
     miller_rabin_test p n = and $ replicate n (miller_rabin p)  
 
-    -- Función para devolver el índice como un entero
-    -- en vez de un Maybe Int con elemIndex
-    {-indexOf :: (Integral a) => a -> [a] -> a
-    indexOf y xs = index y xs 0
-        
-    index :: (Integral a) => a -> [a] -> a -> a
-    index _ [] n            = -1 
-    index y (x:xs) n
-                | y /= x    = index y xs n + 1 
-                | otherwise = n
-    -}
+    -- This function implements the original algorithm, and return a list with
+    -- all the possible solutions
+    baby_step_giant_step_original :: (Integral a, Random a) => a -> a -> a -> [a]
+    baby_step_giant_step_original _ 1 _ = [0] -- Si b == 1, devolvemos un 0
+    baby_step_giant_step_original a b p 
+        -- Si es primo, devolvemos los ks que cumplen a^k = b en Z_p
+        | (miller_rabin_test p 5) = ks
+        | otherwise               = []
+        where
+            s = ceiling $ sqrt $ fromIntegral (p-1)
+            -- Calculamos el paso gigante => L
+            big_pass = map (\x -> big_pow a (x * s) p) [1..s] 
+            -- Calculamos el paso pequeño => l
+            low_pass = map (\x -> (b * a^x) `mod` p ) [0..s - 1] 
+            -- Realizamos la intersección de L y l y 
+            -- calculamos para la lista resultante
+            -- para cada k en ks => k = cs - r
+            ks = map (\x -> ((indexOf x big_pass) + 1) * s - 
+                (indexOf x low_pass)) (intersect big_pass low_pass)
+
+
     baby_step_giant_step :: (Integral a, Random a) => a -> a -> a -> a
     baby_step_giant_step _ 1 _ = 0 -- Si b == 1, devolvemos un 0
     baby_step_giant_step a b p 
@@ -87,8 +97,9 @@ module AritmeticaModular (ext_euclides, inverse, big_pow, miller_rabin_test,
         | otherwise               = error "p debe de ser primo"
         where
             s         = ceiling $ sqrt $ fromIntegral (p-1)
-            -- Calculamos el paso gigante => L
-            baby_step = Map.fromList $ map (\x -> ((b * (big_pow a x p)) `mod` p, x)) [0..s-1] 
+            -- Calculamos el paso enano => l
+            baby_step = Map.fromList $ map (\x -> ((b * (big_pow a x p)) `mod` p, x)) [0..(s-1)]
+            -- Calculamos el logaritmo con el paso gigante.
             ks        = giant_step baby_step a b p s 1
     
     --                         baby step   a    b    p    s  count  ks
@@ -99,16 +110,6 @@ module AritmeticaModular (ext_euclides, inverse, big_pow, miller_rabin_test,
         | otherwise           = giant_step bStep a b p s (count + 1)
         where
             li = big_pow a (count * s) p
-
-            {-
-            -- Calculamos el paso pequeño => l
-            low_step = map (\x -> (b * a^x) `mod` p )  -- Take while not member
-            -- Realizamos la intersección de L y l y 
-            -- calculamos para la lista resultante
-            -- para cada k en ks => k = cs - r
-            ks = map (\x -> ((indexOf x big_step) + 1) * s - 
-                (indexOf x low_step)) (intersect big_step low_step)
-                -}
             
 
     jacobi :: Integral a => a -> a -> a
