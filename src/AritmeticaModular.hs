@@ -4,6 +4,8 @@ module AritmeticaModular (ext_euclides, inverse, big_pow, miller_rabin_test,
     import System.Random
     import System.IO.Unsafe
     import Data.List
+    import Data.Map(Map)
+    import qualified Data.Map as Map
 
     ext_euclides :: Integral a => a -> a -> [a]
     ext_euclides a b = ext_euclides' a b
@@ -68,7 +70,7 @@ module AritmeticaModular (ext_euclides, inverse, big_pow, miller_rabin_test,
 
     -- Función para devolver el índice como un entero
     -- en vez de un Maybe Int con elemIndex
-    indexOf :: (Integral a) => a -> [a] -> a
+    {-indexOf :: (Integral a) => a -> [a] -> a
     indexOf y xs = index y xs 0
         
     index :: (Integral a) => a -> [a] -> a -> a
@@ -76,24 +78,37 @@ module AritmeticaModular (ext_euclides, inverse, big_pow, miller_rabin_test,
     index y (x:xs) n
                 | y /= x    = index y xs n + 1 
                 | otherwise = n
-
-    baby_step_giant_step :: (Integral a, Random a) => a -> a -> a -> [a]
-    baby_step_giant_step _ 1 _ = [0] -- Si b == 1, devolvemos un 0
+    -}
+    baby_step_giant_step :: (Integral a, Random a) => a -> a -> a -> a
+    baby_step_giant_step _ 1 _ = 0 -- Si b == 1, devolvemos un 0
     baby_step_giant_step a b p 
         -- Si es primo, devolvemos los ks que cumplen a^k = b en Z_p
         | (miller_rabin_test p 5) = ks
-        | otherwise               = []
+        | otherwise               = error "p debe de ser primo"
         where
-            s = ceiling $ sqrt $ fromIntegral (p-1)
+            s         = ceiling $ sqrt $ fromIntegral (p-1)
             -- Calculamos el paso gigante => L
-            big_step = map (\x -> big_pow a (x * s) p) [1..s] 
+            baby_step = Map.fromList $ map (\x -> ((b * (big_pow a x p)) `mod` p, x)) [0..s-1] 
+            ks        = giant_step baby_step a b p s 1
+    
+    --                         baby step   a    b    p    s  count  ks
+    giant_step :: Integral a => Map a a -> a -> a -> a -> a -> a -> a
+    giant_step bStep a b p s count
+        | Map.member li bStep = (count*s) - bStep Map.! li
+        | count == s + 1      = error "No existe logaritmo"
+        | otherwise           = giant_step bStep a b p s (count + 1)
+        where
+            li = big_pow a (count * s) p
+
+            {-
             -- Calculamos el paso pequeño => l
-            low_step = map (\x -> (b * a^x) `mod` p ) [0..s - 1] 
+            low_step = map (\x -> (b * a^x) `mod` p )  -- Take while not member
             -- Realizamos la intersección de L y l y 
             -- calculamos para la lista resultante
             -- para cada k en ks => k = cs - r
             ks = map (\x -> ((indexOf x big_step) + 1) * s - 
                 (indexOf x low_step)) (intersect big_step low_step)
+                -}
             
 
     jacobi :: Integral a => a -> a -> a

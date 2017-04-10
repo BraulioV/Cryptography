@@ -5,7 +5,7 @@ module Main (main) where
     import AritmeticaModular
 
     -- baby step, giant step benchmark 
-    bsgs :: (Integral a, Random a) => (a, a, a) -> [a]
+    bsgs :: (Integral a, Random a) => (a, a, a) -> a
     bsgs (a, c, p) = baby_step_giant_step a c p
 
     prime_sqrt :: (Integral a) => (a,a) -> [a]
