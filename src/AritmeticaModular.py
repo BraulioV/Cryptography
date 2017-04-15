@@ -97,19 +97,19 @@ def baby_step_giant_step(a, b, p):
             # Si k existe -> k = cs -r; 0 <= r < s; 1 <= c <= s
             # s = isqrt(p - 1)
             s = isqrt(p)
-            # giant pass
-            L = {}
-            for i in range(1, s + 1):
-                Li = big_pow(a, i*s, p)
-                L[Li] = i
-            # baby pass
+            # baby step
+            l = {}
             for i in range(s):
-                # baby step
                 li = (b * big_pow(a, i, p)) % p
-                # check if li is on L
-                Li = L.get(li)
-                if Li:
-                    return (Li) * s - i
+                l[li] = i
+            # giants step
+            for i in range(1, s + 1):
+                # giant step
+                Li = big_pow(a, i*s, p)
+                # check if Li is on l
+                li = l.get(Li)
+                if li:
+                    return i*s - li
             else:
                 raise ValueError("No existe logaritmo para este número")
     
