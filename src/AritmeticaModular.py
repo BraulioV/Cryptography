@@ -85,6 +85,7 @@ def isqrt(n):
         x = y
         y = (x + n // x) // 2
     return x
+    
 
 def baby_step_giant_step(a, b, p):
     # Si p es primo

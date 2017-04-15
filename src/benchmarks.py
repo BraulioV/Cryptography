@@ -33,8 +33,7 @@ def BSGS_Benchmark():
     print("Ejecución del Baby Pass - Giant Pass")
 
     results = create_empty_df()
-    # for i in range(len(explist)):
-    for i in range(3):
+    for i in range(len(explist)):
         results.loc[i] = [str(cases[i]), timeit('AritmeticaModular.baby_step_giant_step(123456,' + 
                                             str(explist[i] % cases[i]) + ',' + str(cases[i]) + 
                                             ')', setup="import AritmeticaModular", number=N_TEST)]
