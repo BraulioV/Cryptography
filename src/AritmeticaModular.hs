@@ -68,6 +68,19 @@ module AritmeticaModular (ext_euclides, inverse, big_pow, miller_rabin_test,
     -- Realiza un and con las n salidas del test de Miller-Rabin
     miller_rabin_test p n = and $ replicate n (miller_rabin p)  
 
+
+    -- Función para devolver el índice como un entero
+    -- en vez de un Maybe Int con elemIndex
+    indexOf :: Integral a => a -> [a] -> a
+    indexOf y xs = index y xs 0
+        
+    index :: Integral a => a -> [a] -> a -> a
+    index _ [] n            = -1 
+    index y (x:xs) n
+                | y /= x    = index y xs n + 1 
+                | otherwise = n
+
+
     -- This function implements the original algorithm, and return a list with
     -- all the possible solutions
     baby_step_giant_step_original :: (Integral a, Random a) => a -> a -> a -> [a]
@@ -138,7 +151,7 @@ module AritmeticaModular (ext_euclides, inverse, big_pow, miller_rabin_test,
 
     sqrt_mod :: (Integral b) => b -> b -> b
     sqrt_mod a p
-        | jacobi a p /= 1 = error "No existen raíces para a mod p" 
+        | jacobi a p /= 1 = -1
         | u == 1          = big_pow a ((p + 1) `div` 4) p
         | otherwise       = search_residual a u s n p
             where 

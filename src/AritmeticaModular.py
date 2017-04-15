@@ -240,8 +240,8 @@ def Fermat(n):
     while x < n:
         val = x**2 - n
         sqrt_val = isqrt(val)
-        if val == sqrt_val**2:
-            sqrt_val = int(sqrt_val)
+        if val == (sqrt_val*sqrt_val):
+            sqrt_val = sqrt_val
             break
         x+=1
     else:

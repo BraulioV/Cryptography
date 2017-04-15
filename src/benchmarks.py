@@ -4,7 +4,7 @@ from sys import argv
 from AritmeticaModular import *
 
 
-N_TEST = 1000
+N_TEST = 5
 
 cases = [46381, 768479, 9476407, 36780481, 562390847, 1894083629, 65398261921,
          364879542899, 8590365927553, 28564333765949, 12345678910111]
@@ -61,24 +61,24 @@ def ModSqrt_Benchmark():
     print("Ejecución de las raíces modulares")
 
     results = create_empty_df()
-
+    reverse_cases = cases[::-1]
     for i in range(len(cases)):
         results.loc[i] = [str(cases[i]), timeit('AritmeticaModular.sqrts_mod_n(123456, '
                                            + str(cases[i]) + ', ' +
-                                           str(cases[-(i + 1)]) + ')',
+                                           str(reverse_cases[i]) + ')',
                                            setup="import AritmeticaModular", number=N_TEST)]
 
     return results
 
 def Fermat_Benchmark():
 
-    print("Ejecución de las raíces modulares")
+    print("Ejecución del test de fermat")
 
     results = create_empty_df()
 
     for i in range(len(cases)):
-        print("caso =",i)
-        results.loc[i] = [str(cases[i]), timeit('AritmeticaModular.Fermat('+ str(3*cases[i] + 1) + ')',
+        print("case ", i)
+        results.loc[i] = [str(cases[i]), timeit('AritmeticaModular.Fermat('+ str(cases[i] + 1) + ')',
                                            setup="import AritmeticaModular", number=N_TEST)]
 
     return results
@@ -91,7 +91,7 @@ def Pollard_Benchmark():
 
     for i in range(len(cases)):
         print("caso =",i)
-        results.loc[i] = [str(cases[i]), timeit('AritmeticaModular.ρ_Pollard('+ str(3*cases[i] + 1) + ')',
+        results.loc[i] = [str(cases[i]), timeit('AritmeticaModular.ρ_Pollard('+ str(cases[i]+1) + ')',
                                            setup="import AritmeticaModular", number=N_TEST)]
 
     return results
@@ -108,12 +108,6 @@ if __name__ == "__main__":
 
     elif argv[1] == "BSGS":
         df = BSGS_Benchmark()
-
-    elif argv[1] == "Jacobi":
-        df = Jacobi_Benchmark()
-
-    elif argv[1] == "SQRT":
-        df = ModSqrt_Benchmark()
 
     elif argv[1] == "Jacobi":
         df = Jacobi_Benchmark()
