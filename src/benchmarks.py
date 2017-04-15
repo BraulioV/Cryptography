@@ -76,7 +76,7 @@ def Fermat_Benchmark():
 
     results = create_empty_df()
 
-    for i in range(len(cases)):
+    for i in range(5):
         print("case ", i)
         results.loc[i] = [str(cases[i]), timeit('AritmeticaModular.Fermat('+ str(cases[i] + 1) + ')',
                                            setup="import AritmeticaModular", number=N_TEST)]
