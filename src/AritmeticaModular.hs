@@ -213,7 +213,7 @@ module AritmeticaModular (ext_euclides, inverse, big_pow, miller_rabin_test,
         where
             --                       _         _
             -- valor inicial de x = |  sqrt(n)  |
-            x       = ceiling $ sqrt (fromIntegral n)
+            x = ceiling $ sqrt (fromIntegral n)
 
 
     fermat' :: Integral a => a -> a -> [a]
@@ -230,6 +230,7 @@ module AritmeticaModular (ext_euclides, inverse, big_pow, miller_rabin_test,
                 high_sqrt = ceiling $ sqrt_val
                 cond      = high_sqrt == low_sqrt
                 x'        = x + 1
+                
 
     pollard :: Integral a => a -> a -> a -> a -> (a -> a) -> a
     pollard n x y d f
