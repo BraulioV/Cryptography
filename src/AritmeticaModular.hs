@@ -158,7 +158,7 @@ module AritmeticaModular (ext_euclides, inverse, big_pow, miller_rabin_test,
                 u_s = bifactor (p - 1)
                 u = head u_s
                 s = last u_s
-                n =  1 + (last $ takeWhile  (\x -> (jacobi x p) == 1) [2..p - 1])
+                n =  1 + (last $ takeWhile  (\x -> (jacobi x p) == 1) [1..p - 1])
 
     search_residual :: (Integral b) => b -> b -> b -> b -> b -> b
     search_residual a u s n p = res r b j inv_a u p
