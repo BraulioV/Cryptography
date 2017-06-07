@@ -1,6 +1,8 @@
+
+# coding: utf-8
+
 from random import randint
 from functools import reduce
-from math import sqrt, ceil
 
 def ext_euclides(a, b):
     if b == 0:
@@ -14,7 +16,7 @@ def ext_euclides(a, b):
             a, b, u2, u1, v2, v1 = b, r, u1, u, v1, v      
             
         return a, u2, v2
-
+    
 def inverse(a,b):
     return ext_euclides(a,b)[1]
 
@@ -85,7 +87,33 @@ def isqrt(n):
         x = y
         y = (x + n // x) // 2
     return x
+
+def baby_step_giant_step_original(a, b, p):
+    # Si p es primo
+    if miller_rabin_test(p):
+        # Buscamos k tal que a^k = b, con a,b in Z_p
+        if b == 1:
+            return 0 # k = 0
+        
+        else:
+            # Si k existe -> k = cs -r; 0 <= r < s; 1 <= c <= s
+            s = isqrt(p - 1)
+            # giant pass
+            L = [pow(a, i*s, p) for i in range(1, s + 1)]
+            # baby pass
+            l = [(b * big_pow(a, i, p)) % p for i in range(s)]
+            # calculamos la intersección entre L y l
+            ks = list(filter(lambda x: x in L, l))
+            # calculamos los k, que en caso de que p
+            # no sea primitivo, habrá varios k
+            for k in ks:
+                yield (L.index(k) + 1) * s - l.index(k)
     
+    else:
+        print("p =", p, "no es primo.")
+    
+    return None
+
 
 def baby_step_giant_step(a, b, p):
     # Si p es primo
@@ -109,11 +137,10 @@ def baby_step_giant_step(a, b, p):
                 Li = big_pow(a, i*s, p)
                 # check if Li is on l
                 li = l.get(Li)
-                if li:
+                if li != None:
                     return i*s - li
             else:
                 raise ValueError("No existe logaritmo para este número")
-    
     else:
         raise AttributeError("p =", p, "no es primo.")
 
@@ -153,7 +180,7 @@ def Jacobi(a, p):
     else:
         raise AttributeError('p tiene que ser impar')
 
-
+        
 def sqrt_mod(a, p):
     # si el número tiene raíz en Z_p
     if Jacobi(a, p) == 1:
@@ -240,7 +267,8 @@ def Fermat(n):
     while x < n:
         val = x**2 - n
         sqrt_val = isqrt(val)
-        if val == (sqrt_val*sqrt_val):
+        if val == sqrt_val**2:
+            sqrt_val = int(sqrt_val)
             break
         x+=1
     else:
@@ -255,6 +283,8 @@ def Pollard(n, c, f):
     while d == 1:
         x, y = f(x), f(f(y))
         d = ext_euclides(abs(x - y), n)[0]
+        print(x, "\t", y, "\t",d)
+    
     
     if d == n:
         raise ValueError('No se encuentra descomposición para n con c =' + str(c))
@@ -262,9 +292,10 @@ def Pollard(n, c, f):
         return d
     
     
-def ρ_Pollard(n, c = 1):
+def ρ_Pollard(n, c = 2):
     if c == 0 or c == -2:
         raise AttributeError('c tiene que ser distinto de 0 y -2')
     f = lambda x: (x**2 + c) % n
     factor = Pollard(n, c, f)
     return [factor, n // factor]
+
